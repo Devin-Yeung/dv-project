@@ -25,8 +25,8 @@ extract_words <- function(sentences) {
 word_cloud <- function(data) {
   words <- extract_words(data$description)
   occur <- table(words)
-  occur <- sort(occur, decreasing = T)
-  wordcloud2(occur)
+  occur <- sort(occur, decreasing = T)[1:1000]
+  letterCloud(occur, 'N', color=netflix_color)
 }
 ```
 
