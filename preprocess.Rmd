@@ -1,0 +1,12 @@
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+df <- read.csv("data/netflix_titles.csv")
+```
+
+```{r}
+summary(df)
+```
