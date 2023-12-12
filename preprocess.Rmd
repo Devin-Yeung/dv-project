@@ -9,5 +9,5 @@ df <- read.csv("data/netflix_titles.csv", na.strings = c("", "NA"))
 
 ```{r}
 df %>%
-  summarise_all(~sum(is.na(.)))
+  summarise_all(~ sum(is.na(.)))
 ```
