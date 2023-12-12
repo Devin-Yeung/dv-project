@@ -2,7 +2,7 @@ permissions:
   contents: write
 
 on:
-  worflow_dispatch:
+  workflow_dispatch:
   # push:
     # paths: ["**.[rR]", "**.[qrR]md", "**.[rR]markdown", "**.[rR]nw", "**.[rR]profile"]
 
