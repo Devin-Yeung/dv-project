@@ -4,6 +4,7 @@ library(tidyverse)
 library(purrr) # for functional programming
 library(wordcloud2) # for creating word cloud
 df <- read.csv("data/netflix_titles.csv", na.strings = c("", "NA"))
+netflix_color <- colorRampPalette(c('#221f1f', '#b20710'))(5)
 ```
 
 # Extract the words
