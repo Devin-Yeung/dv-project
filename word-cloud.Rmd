@@ -9,12 +9,12 @@ df <- read.csv("data/netflix_titles.csv", na.strings = c("", "NA"))
 
 ```{r}
 descriptions <- df$description
-COMMON_WORDS <- c("a", "in", "at", "be", "of", "the", "an", "to", "on", "he", "she", "and", "his", "with", "her", "for", "their", "when", "this", "from", "as", "is", "by", "after", "that", "who", "but", "into", "up", "they", "him", "out", "must", "are", "about", "it", "its", "while", "one", "them", "where", "has", "more", "over", "have","off" ,"s")
+COMMON_WORDS <- c("a", "in", "at", "be", "of", "the", "an", "to", "on", "he", "she", "and", "his", "with", "her", "for", "their", "when", "this", "from", "as", "is", "by", "after", "that", "who", "but", "into", "up", "they", "him", "out", "must", "are", "about", "it", "its", "while", "one", "them", "where", "has", "more", "over", "have", "off", "s")
 
 extract_words <- function(sentences) {
   strsplit(sentences, "\\s+") %>%
     flatten_chr() %>%
-    map(str_remove_all,"[^a-zA-Z\\s]") %>%
+    map(str_remove_all, "[^a-zA-Z\\s]") %>%
     map(tolower) %>%
     flatten_chr() %>%
     discard(function(x) x == "") %>% # remove empty string
