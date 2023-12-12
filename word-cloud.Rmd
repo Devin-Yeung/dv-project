@@ -1,0 +1,30 @@
+# Prepare
+```{r}
+library(tidyverse)
+library(purrr) # for functional programming
+df <- read.csv("data/netflix_titles.csv", na.strings = c("", "NA"))
+```
+
+# Extract the words
+
+```{r}
+descriptions <- df$description
+COMMON_WORDS <- c("a", "in", "at", "be", "of", "the", "an", "to", "on", "he", "she", "and", "his", "with", "her", "for", "their", "when", "this", "from", "as", "is", "by", "after", "that", "who", "but", "into", "up", "they", "him", "out", "must", "are", "about", "it", "its")
+
+extract_words <- function(sentences) {
+  strsplit(sentences, "\\s+") %>%
+    flatten_chr() %>%
+    map(str_remove_all,"[^a-zA-Z\\s]") %>%
+    map(tolower) %>%
+    flatten_chr() %>%
+    discard(function(x) length(x) <= 0) %>% # remove empty string
+    discard(function(x) x %in% COMMON_WORDS)
+}
+
+words <- extract_words(descriptions)
+```
+
+```{r}
+occr <- table(words)
+sort(occr, decreasing = T)
+```
