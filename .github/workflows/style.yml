@@ -2,7 +2,8 @@ permissions:
   contents: write
 
 on:
-  push:
+  worflow_dispatch:
+  # push:
     # paths: ["**.[rR]", "**.[qrR]md", "**.[rR]markdown", "**.[rR]nw", "**.[rR]profile"]
 
 name: Style
