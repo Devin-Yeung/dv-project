@@ -376,6 +376,30 @@ pre code {
 ## 1       0    0     0     2634  825     831         10            0      7
 ##   duration listed_in description
 ## 1        0         0           0</code></pre>
+<div id="the-wrong-offset-should-be-manually-fixed" class="section level1">
+<h1>The wrong offset should be manually fixed</h1>
+<pre class="r"><code>df %&gt;%
+  filter(show_id %in% c(&quot;s5542&quot;, &quot;s5795&quot;, &quot;s5814&quot;))</code></pre>
+<pre><code>##   show_id  type                                title   director       cast
+## 1   s5542 Movie                      Louis C.K. 2017 Louis C.K. Louis C.K.
+## 2   s5795 Movie                Louis C.K.: Hilarious Louis C.K. Louis C.K.
+## 3   s5814 Movie Louis C.K.: Live at the Comedy Store Louis C.K. Louis C.K.
+##         country         date_added release_year rating duration listed_in
+## 1 United States      April 4, 2017         2017   &lt;NA&gt;   74 min    Movies
+## 2 United States September 16, 2016         2010   &lt;NA&gt;   84 min    Movies
+## 3 United States    August 15, 2016         2015   &lt;NA&gt;   66 min    Movies
+##                                                                                                                                            description
+## 1           Louis C.K. muses on religion, eternal love, giving dogs drugs, email fights, teachers and more in a live performance from Washington, D.C.
+## 2    Emmy-winning comedy writer Louis C.K. brings his caustic wit to Milwaukee, offering up his unique and uncensored take on sex, parenting and more.
+## 3 The comic puts his trademark hilarious/thought-provoking spin on finding a bat in his kitchen, seeing rats having sex, Boston accents and dead pets.</code></pre>
+</div>
+<div id="check-the-ratings" class="section level1">
+<h1>Check the ratings</h1>
+<pre class="r"><code>unique(df$rating)</code></pre>
+<pre><code>##  [1] &quot;PG-13&quot;    &quot;TV-MA&quot;    &quot;PG&quot;       &quot;TV-14&quot;    &quot;TV-PG&quot;    &quot;TV-Y&quot;    
+##  [7] &quot;TV-Y7&quot;    &quot;R&quot;        &quot;TV-G&quot;     &quot;G&quot;        &quot;NC-17&quot;    NA        
+## [13] &quot;NR&quot;       &quot;TV-Y7-FV&quot; &quot;UR&quot;</code></pre>
+</div>
 
 
 
