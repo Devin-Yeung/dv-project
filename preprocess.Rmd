@@ -11,3 +11,14 @@ df <- read.csv("data/netflix_titles.csv", na.strings = c("", "NA"))
 df %>%
   summarise_all(~ sum(is.na(.)))
 ```
+
+# The wrong offset should be manually fixed
+```{r}
+df %>%
+  filter(show_id %in% c("s5542", "s5795", "s5814"))
+```
+
+# Check the ratings
+```{r}
+unique(df$rating)
+```
