@@ -22,32 +22,33 @@ grouped <- df %>%
 
 # Grouping
 ```{r}
-by_country_type <- grouped %>% group_by(country, type) %>%
+by_country_type <- grouped %>%
+  group_by(country, type) %>%
   summarise(cnt = sum(cnt))
 ```
 # Movie Distribution by country
 ```{r}
-plot_ly(by_country_type %>% filter(type == "Movie"), 
-               type = 'choropleth',
-               locations = ~country,
-               locationmode = 'country names',
-               z = ~cnt,
-               color = ~cnt,
-               colors = 'OrRd',
-               colorbar = list(title = 'Counts'),
-               text = ~paste(country, "<br>Counts: ", cnt)
+plot_ly(by_country_type %>% filter(type == "Movie"),
+  type = "choropleth",
+  locations = ~country,
+  locationmode = "country names",
+  z = ~cnt,
+  color = ~cnt,
+  colors = "OrRd",
+  colorbar = list(title = "Counts"),
+  text = ~ paste(country, "<br>Counts: ", cnt)
 )
 ```
 # TV Show Distribution by contry
 ```{r}
-plot_ly(by_country_type %>% filter(type == "TV Show"), 
-               type = 'choropleth',
-               locations = ~country,
-               locationmode = 'country names',
-               z = ~cnt,
-               color = ~cnt,
-               colors = 'OrRd',
-               colorbar = list(title = 'Counts'),
-               text = ~paste(country, "<br>Counts: ", cnt)
+plot_ly(by_country_type %>% filter(type == "TV Show"),
+  type = "choropleth",
+  locations = ~country,
+  locationmode = "country names",
+  z = ~cnt,
+  color = ~cnt,
+  colors = "OrRd",
+  colorbar = list(title = "Counts"),
+  text = ~ paste(country, "<br>Counts: ", cnt)
 )
 ```
