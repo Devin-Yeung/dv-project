@@ -86,10 +86,16 @@ custom_order <- type_prop %>%
 ```{r}
 ggplot(type_prop, aes(y = factor(country, levels = custom_order), x = prop, fill = type)) +
   geom_bar(stat = "identity") +
+  geom_text(
+    aes(label = scales::percent(prop / 100)),
+    position = position_stack(vjust = 0.5),
+    color = "white",
+    size = 3
+  ) +
   labs(
     title = "Proportions of Movie and TV Show by Country",
-    y = "Proportion (%)",
-    x = "Country",
+    y = "Country",
+    x = "Proportion (%)",
     fill = "Type"
   ) +
   scale_x_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 100)) +
