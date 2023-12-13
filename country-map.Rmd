@@ -52,3 +52,32 @@ plot_ly(by_country_type %>% filter(type == "TV Show"),
   text = ~ paste(country, "<br>Counts: ", cnt)
 )
 ```
+# Gathering data
+```{r, warning=FALSE}
+type_prop <- by_country_type %>%
+  group_by(country) %>%
+  mutate(prop = round(cnt / sum(cnt) * 100, 1)) %>%
+  group_by(country) %>%
+  summarise(total = sum(cnt), prop = prop, type = type) %>%
+  as.data.frame() %>%
+  top_n(20, wt = total)
+
+custom_order <- type_prop %>% 
+  arrange(desc(ifelse(type == "Movie", prop, -prop))) %>%
+  select(country) %>%
+  array() %>%
+  flatten() %>%
+  unique()
+```
+
+```{r}
+ggplot(type_prop, aes(y = factor(country, levels = custom_order), x = prop, fill = type)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Proportions of Movie and TV Show by Country",
+       y = "Proportion (%)",
+       x = "Country",
+       fill = "Type") +
+  scale_x_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 100)) +
+  scale_fill_manual(values = c("#221f1f", "#b20710")) +
+  theme_minimal()
+```
