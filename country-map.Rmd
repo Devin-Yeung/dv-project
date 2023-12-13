@@ -2,7 +2,7 @@
 ```{r}
 library(tidyverse, warn.conflicts = F)
 library(plotly)
-library(ggplot2)
+library(ggplot2, warn.conflicts = F)
 library(purrr) # for functional programming
 df <- read.csv("data/netflix_titles.csv", na.strings = c("", "NA"))
 ```
@@ -11,11 +11,13 @@ df <- read.csv("data/netflix_titles.csv", na.strings = c("", "NA"))
 
 ```{r}
 grouped <- df %>%
-  filter(!is.na(country) & country != "") %>%
+  filter(!is.na(country) & country != "") %>% # remove the NA country
+  filter(!is.na(date_added)) %>% # remove the NA date_added
+  mutate(year_added = year(parse_date(date_added, "%B %d, %Y"))) %>% # extract year_added
   mutate(country = strsplit(as.character(country), ",")) %>%
   mutate(country = lapply(country, trimws)) %>%
   unnest(country) %>%
-  group_by(country, release_year, type) %>%
+  group_by(country, year_added, type) %>%
   summarise(cnt = n()) %>%
   filter(!is.na(country) & country != "")
 ```
@@ -56,13 +58,24 @@ plot_ly(by_country_type %>% filter(type == "TV Show"),
 # Accum TV shows & Movie
 ```{r}
 country_accum <- grouped %>%
-  group_by(country, release_year) %>%
+  group_by(country, year_added) %>%
   summarise(cnt = sum(cnt)) %>%
   group_by(country) %>%
-  arrange(release_year) %>%
+  arrange(year_added) %>%
   mutate(accum = cumsum(cnt))
 
-country_accum
+# TODO: dynamics graph over year
+country_accum %>% filter(year_added == 2015) %>%
+  plot_ly(
+  type = "choropleth",
+  locations = ~country,
+  locationmode = "country names",
+  z = ~accum,
+  color = ~accum,
+  colors = "OrRd",
+  colorbar = list(title = "Accumlated Sum"),
+  text = ~ paste(country, "<br>Accumlated Sum: ", accum)
+)
 ```
 
 # Gathering data
