@@ -1,0 +1,53 @@
+# Prepare
+```{r}
+library(tidyverse, warn.conflicts = F)
+library(plotly)
+library(ggplot2)
+library(purrr) # for functional programming
+df <- read.csv("data/netflix_titles.csv", na.strings = c("", "NA"))
+```
+
+# Get country information
+
+```{r}
+grouped <- df %>%
+  filter(!is.na(country) & country != "") %>%
+  mutate(country = strsplit(as.character(country), ",")) %>%
+  mutate(country = lapply(country, trimws)) %>%
+  unnest(country) %>%
+  group_by(country, release_year, type) %>%
+  summarise(cnt = n()) %>%
+  filter(!is.na(country) & country != "")
+```
+
+# Grouping
+```{r}
+by_country_type <- grouped %>% group_by(country, type) %>%
+  summarise(cnt = sum(cnt))
+```
+# Movie Distribution by country
+```{r}
+plot_ly(by_country_type %>% filter(type == "Movie"), 
+               type = 'choropleth',
+               locations = ~country,
+               locationmode = 'country names',
+               z = ~cnt,
+               color = ~cnt,
+               colors = 'OrRd',
+               colorbar = list(title = 'Counts'),
+               text = ~paste(country, "<br>Counts: ", cnt)
+)
+```
+# TV Show Distribution by contry
+```{r}
+plot_ly(by_country_type %>% filter(type == "TV Show"), 
+               type = 'choropleth',
+               locations = ~country,
+               locationmode = 'country names',
+               z = ~cnt,
+               color = ~cnt,
+               colors = 'OrRd',
+               colorbar = list(title = 'Counts'),
+               text = ~paste(country, "<br>Counts: ", cnt)
+)
+```
