@@ -52,6 +52,19 @@ plot_ly(by_country_type %>% filter(type == "TV Show"),
   text = ~ paste(country, "<br>Counts: ", cnt)
 )
 ```
+
+# Accum TV shows & Movie
+```{r}
+country_accum <- grouped %>%
+  group_by(country, release_year) %>%
+  summarise(cnt = sum(cnt)) %>%
+  group_by(country) %>%
+  arrange(release_year) %>%
+  mutate(accum = cumsum(cnt))
+
+country_accum
+```
+
 # Gathering data
 ```{r, warning=FALSE}
 type_prop <- by_country_type %>%
