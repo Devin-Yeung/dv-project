@@ -4,13 +4,13 @@ library(tidyverse)
 library(purrr) # for functional programming
 library(wordcloud2) # for creating word cloud
 df <- read.csv("data/netflix_titles.csv", na.strings = c("", "NA"))
-netflix_color <- colorRampPalette(c('#221f1f', '#b20710', '#e50914'))(10)
+netflix_color <- colorRampPalette(c("#221f1f", "#b20710", "#e50914"))(10)
 ```
 
 # Extract the words
 
 ```{r}
-COMMON_WORDS <- c("a", "in", "at", "be", "of", "the", "an", "to", "on", "he", "she", "and", "his", "with", "her", "for", "their", "when", "this", "from", "as", "is", "by", "after", "that", "who", "but", "into", "up", "they", "him", "out", "must", "are", "about", "it", "its", "while", "one", "them", "where", "has", "more", "over", "have", "off", "two","s")
+COMMON_WORDS <- c("a", "in", "at", "be", "of", "the", "an", "to", "on", "he", "she", "and", "his", "with", "her", "for", "their", "when", "this", "from", "as", "is", "by", "after", "that", "who", "but", "into", "up", "they", "him", "out", "must", "are", "about", "it", "its", "while", "one", "them", "where", "has", "more", "over", "have", "off", "two", "s")
 
 extract_words <- function(sentences) {
   strsplit(sentences, "\\s+") %>%

@@ -65,17 +65,18 @@ country_accum <- grouped %>%
   mutate(accum = cumsum(cnt))
 
 # TODO: dynamics graph over year
-country_accum %>% filter(year_added == 2015) %>%
+country_accum %>%
+  filter(year_added == 2015) %>%
   plot_ly(
-  type = "choropleth",
-  locations = ~country,
-  locationmode = "country names",
-  z = ~accum,
-  color = ~accum,
-  colors = "OrRd",
-  colorbar = list(title = "Accumlated Sum"),
-  text = ~ paste(country, "<br>Accumlated Sum: ", accum)
-)
+    type = "choropleth",
+    locations = ~country,
+    locationmode = "country names",
+    z = ~accum,
+    color = ~accum,
+    colors = "OrRd",
+    colorbar = list(title = "Accumlated Sum"),
+    text = ~ paste(country, "<br>Accumlated Sum: ", accum)
+  )
 ```
 
 # Gathering data
