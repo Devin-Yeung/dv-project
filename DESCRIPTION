@@ -1,4 +1,4 @@
 Package: dv-project
 Title: Introduction to data visualization (Project)
 Version: 0.1.0
-Imports: tidyverse, plotly, flexdashboard, ggwordcloud
+Imports: tidyverse, plotly, flexdashboard, ggwordcloud, shiny
