@@ -333,7 +333,48 @@ p1 <- ggplot(
 p1_plotly <- ggplotly(p1)
 p1_plotly
 ```
- 
+
+### Trend of Ratings Categories Over Years
+```{r}
+l_category_type_plot_data <- mydata %>%
+  mutate(category = case_when(
+    rating %in% c("G", "TV-G", "TV-Y") ~ "Little Kids",
+    rating %in% c("PG", "TV-PG", "TV-Y7") ~ "Older Kids",
+    rating %in% c("TV-Y7-FV", "PG-13", "TV-14") ~ "Teenagers",
+    rating %in% c("NC-17", "NR", "R", "TV-MA", "UR") ~ "Adults",
+    TRUE ~ "Other" # Add a default category for any unexpected ratings
+  )) %>%
+  group_by(category, release_year) %>%
+  summarize(n = n()) %>%
+  group_by(release_year) %>%
+  mutate(prop = round((n / sum(n)) * 100, 1))  %>%
+  as.data.frame()
+
+
+gg <- l_category_type_plot_data %>%
+  filter(release_year >= 2000) %>%
+  ggplot(aes(x = release_year, 
+             y = prop, 
+             color = category, 
+             group = category,
+             text = paste("Category: ", category, "<br>Prop: ", prop))) +
+  geom_line(size = 1.5) +  
+  geom_point(size = 3, alpha = 0.7) +  
+  labs(x = "Release Year", 
+       y = "Percentage",
+       title = "Trend of Ratings Categories Over Years") +
+  scale_y_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 100)) +
+  scale_color_manual(values = c("#221f1f", "#5e4d4d","#b20710", "#ec8b06")) + # Use scale_color_manual for line colors
+  theme_minimal() +  
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "bottom") +
+  facet_wrap(~category, scales = "free_y")  # Split the plot by category
+
+# Use ggplotly to make it interactive
+ggplotly(gg)
+
+```
+
 Country
 =====================================
 ## Column {.tabset data-width="650"}
