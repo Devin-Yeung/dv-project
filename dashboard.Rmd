@@ -34,7 +34,6 @@ df <- read.csv("data/netflix_titles.csv")
 data <- df %>% mutate(release_year = as.numeric(str_sub(release_year, -4))) # get years
 data <- data %>% separate_rows(listed_in, sep = ", ") %>% # Separate the listed in lines by commas
   arrange(release_year) # Sort by year
-
 ```
 
 ```{r}
@@ -46,17 +45,16 @@ top10_types <- data %>%
   group_by(release_year) %>%
   top_n(10)
 
-#top10_types
+# top10_types
 ```
 
 ```{r}
-#List number of times
+# List number of times
 grouped_table <- top10_types %>%
   group_by(listed_in) %>%
   summarise(count = n()) %>%
   arrange(desc(count))
-#grouped_table
-
+# grouped_table
 ```
 
 
@@ -64,10 +62,12 @@ grouped_table <- top10_types %>%
 colnames(grouped_table) <- c("Type_name", "epidemic_years")
 
 
-p1 <- ggplot(data = grouped_table, mapping = aes(x = reorder(Type_name, -epidemic_years), 
-                                                 y = epidemic_years, fill = epidemic_years)) +
-  geom_bar(stat = 'identity') +
-  scale_fill_gradient(low = "#221f1f", high = "#b20710") +  # Set color gradient
+p1 <- ggplot(data = grouped_table, mapping = aes(
+  x = reorder(Type_name, -epidemic_years),
+  y = epidemic_years, fill = epidemic_years
+)) +
+  geom_bar(stat = "identity") +
+  scale_fill_gradient(low = "#221f1f", high = "#b20710") + # Set color gradient
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(title = "Total prevalence type", x = "type", y = "The number of epidemic years of a type")
 
@@ -79,23 +79,24 @@ total_table <- top10_types %>%
   group_by(listed_in) %>%
   summarise(total_count = sum(type_count), .groups = "drop")
 
-#total_table
+# total_table
 
 # The summary table is arranged according to the number of occurrences from largest to smallest
 total_table <- total_table %>% arrange(desc(total_count))
-#colnames(total_table) <- c("Type name", "List times")
+# colnames(total_table) <- c("Type name", "List times")
 
-#total_table
-
+# total_table
 ```
 
 ### Total prevalence type & Total production quantity 
 ```{r}
 colnames(total_table) <- c("Type_name", "Production_volume")
-#Summary of the number of production types
-p2 <- ggplot(data = total_table, mapping = aes(x = reorder(Type_name, -Production_volume), 
-                                               y = Production_volume, fill = Production_volume)) +
-  geom_bar(stat = 'identity') +
+# Summary of the number of production types
+p2 <- ggplot(data = total_table, mapping = aes(
+  x = reorder(Type_name, -Production_volume),
+  y = Production_volume, fill = Production_volume
+)) +
+  geom_bar(stat = "identity") +
   scale_fill_gradient(high = "#b20710", low = "#221f1f") + # Set color gradient
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(title = "Total production quantity", x = "type", y = "Production volume")
@@ -118,32 +119,34 @@ data$duration <- as.numeric(str_extract(data$duration, "\\d+"))
 
 data$decade <- cut(data$release_year, breaks = seq(1920, 2040, by = 10), labels = seq(1920, 2030, by = 10))
 
-ggplot(data%>%filter(duration<=200), aes(x = decade, y = duration)) +
-  geom_boxplot(fill = '#b20710', color = "#221f1f", notch = TRUE) +
-  labs(title = "Duration Distribution of Movies by Decade",
-       x = "Decade",
-       y = "Duration") +
+ggplot(data %>% filter(duration <= 200), aes(x = decade, y = duration)) +
+  geom_boxplot(fill = "#b20710", color = "#221f1f", notch = TRUE) +
+  labs(
+    title = "Duration Distribution of Movies by Decade",
+    x = "Decade",
+    y = "Duration"
+  ) +
   theme_minimal() +
   scale_y_continuous(breaks = seq(0, 200, 50), labels = paste0(seq(0, 200, 50), " minutes"))
-
 ```
 
 ### TV Show Duration  vs. Decade
 
 ```{r}
 data <- subset(df, type == "TV Show")
-data $duration <- as.numeric(str_extract(data$duration, "\\d+"))
+data$duration <- as.numeric(str_extract(data$duration, "\\d+"))
 
 data$decade <- cut(data$release_year, breaks = seq(1920, 2040, by = 10), labels = seq(1920, 2030, by = 10))
 
 ggplot(data, aes(x = decade, y = duration)) +
-  geom_boxplot(fill = '#b20710',color = "#221f1f", notch = TRUE) +
-  labs(title = "Duration Distribution of TV Show by Decade",
-       x = "Decade",
-       y = "Duration") +
+  geom_boxplot(fill = "#b20710", color = "#221f1f", notch = TRUE) +
+  labs(
+    title = "Duration Distribution of TV Show by Decade",
+    x = "Decade",
+    y = "Duration"
+  ) +
   theme_minimal() +
   scale_y_continuous(breaks = seq(0, 20, 5), labels = paste0(seq(0, 20, 5), " seasons"))
-
 ```
 
 Row
@@ -153,49 +156,51 @@ Row
 
 ```{r}
 data <- df %>%
-  filter(type == "Movie") %>%  
-  mutate(duration = as.numeric(str_extract(duration, "\\d+"))) %>%  
-  separate_rows(listed_in, sep = ", ") %>%  
-  group_by(listed_in) %>%  
-  summarise(avg_duration = mean(duration, na.rm = TRUE)) 
+  filter(type == "Movie") %>%
+  mutate(duration = as.numeric(str_extract(duration, "\\d+"))) %>%
+  separate_rows(listed_in, sep = ", ") %>%
+  group_by(listed_in) %>%
+  summarise(avg_duration = mean(duration, na.rm = TRUE))
 
 ggplot(data, aes(x = reorder(listed_in, avg_duration), y = avg_duration, fill = avg_duration)) +
-  geom_bar(stat = "identity") +  
-  labs(title = "Average Duration of Movies by Genre",
-       x = "Genre",
-       y = "Average Duration (minutes)",
-       fill = "Average Duration (minutes)") +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Average Duration of Movies by Genre",
+    x = "Genre",
+    y = "Average Duration (minutes)",
+    fill = "Average Duration (minutes)"
+  ) +
   theme_minimal() +
   scale_y_continuous(breaks = seq(0, 150, 20), labels = seq(0, 150, 20)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   coord_flip() +
   scale_fill_gradient(low = "#221f1f", high = "#b20710")
-
 ```
 
 ### TV Show Duration  vs. Genre
 
 ```{r}
 data <- df %>%
-  filter(type == "TV Show") %>%  
-  mutate(duration = as.numeric(str_extract(duration, "\\d+"))) %>%  
-  separate_rows(listed_in, sep = ", ") %>%  
-  group_by(listed_in) %>%  
-  summarise(avg_duration = mean(duration, na.rm = TRUE)) 
+  filter(type == "TV Show") %>%
+  mutate(duration = as.numeric(str_extract(duration, "\\d+"))) %>%
+  separate_rows(listed_in, sep = ", ") %>%
+  group_by(listed_in) %>%
+  summarise(avg_duration = mean(duration, na.rm = TRUE))
 
 # 绘制图表
-ggplot(data, aes(x = reorder(listed_in, avg_duration) , y = avg_duration, fill = avg_duration)) +
-  geom_bar(stat = "identity") +  
-  labs(title = "Average Duration of TV Shows by Genre",
-       x = "Genre",
-       y = "Average Duration (seasons)",
-       fill = "Average Duration (seasons)") +
+ggplot(data, aes(x = reorder(listed_in, avg_duration), y = avg_duration, fill = avg_duration)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Average Duration of TV Shows by Genre",
+    x = "Genre",
+    y = "Average Duration (seasons)",
+    fill = "Average Duration (seasons)"
+  ) +
   theme_minimal() +
   scale_y_continuous(breaks = seq(0, 7, 1), labels = seq(0, 7, 1)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  coord_flip()+
+  coord_flip() +
   scale_fill_gradient(high = "#221f1f", low = "#b20710")
-
 ```
 
 Rating
@@ -221,17 +226,18 @@ plotdata <- mydata %>%
 
 category_type_data <- plotdata %>%
   mutate(category = case_when(
-    rating %in% c('G', 'TV-G', 'TV-Y') ~ 'Little Kids',
-    rating %in% c('PG', 'TV-PG', 'TV-Y7') ~ 'Older Kids',
-    rating %in% c('TV-Y7-FV', 'PG-13', 'TV-14') ~ 'Teenagers',
-    rating %in% c('NC-17', 'NR', 'R', 'TV-MA', 'UR') ~ 'Adults',
-    TRUE ~ 'Other'  # Add a default category for any unexpected ratings
+    rating %in% c("G", "TV-G", "TV-Y") ~ "Little Kids",
+    rating %in% c("PG", "TV-PG", "TV-Y7") ~ "Older Kids",
+    rating %in% c("TV-Y7-FV", "PG-13", "TV-14") ~ "Teenagers",
+    rating %in% c("NC-17", "NR", "R", "TV-MA", "UR") ~ "Adults",
+    TRUE ~ "Other" # Add a default category for any unexpected ratings
   ))
 
 
-category_type_data$category <- factor(category_type_data$category, 
-                                      levels = c("Little Kids", "Older Kids", "Teenagers", "Adults"),
-                                      ordered = TRUE)
+category_type_data$category <- factor(category_type_data$category,
+  levels = c("Little Kids", "Older Kids", "Teenagers", "Adults"),
+  ordered = TRUE
+)
 
 p <- category_type_data %>%
   ggplot(aes(rating, n, fill = type, label = n)) +
@@ -256,7 +262,6 @@ p <- category_type_data %>%
   )
 
 p
-
 ```
 
 ### rating catergory over each year
@@ -268,20 +273,22 @@ plotdata <- mydata %>%
 p3 <- plotdata %>%
   filter(release_year >= 2000) %>%
   mutate(category = case_when(
-    rating %in% c('G', 'TV-G', 'TV-Y') ~ 'Little Kids',
-    rating %in% c('PG', 'TV-PG', 'TV-Y7') ~ 'Older Kids',
-    rating %in% c('TV-Y7-FV', 'PG-13', 'TV-14') ~ 'Teenagers',
-    rating %in% c('NC-17', 'NR', 'R', 'TV-MA', 'UR') ~ 'Adults',
-    TRUE ~ 'Other'  # Add a default category for any unexpected ratings
+    rating %in% c("G", "TV-G", "TV-Y") ~ "Little Kids",
+    rating %in% c("PG", "TV-PG", "TV-Y7") ~ "Older Kids",
+    rating %in% c("TV-Y7-FV", "PG-13", "TV-14") ~ "Teenagers",
+    rating %in% c("NC-17", "NR", "R", "TV-MA", "UR") ~ "Adults",
+    TRUE ~ "Other" # Add a default category for any unexpected ratings
   )) %>%
   ggplot(aes(release_year, n, fill = category)) +
   geom_bar(stat = "identity", position = "fill") +
   scale_y_continuous(labels = scales::percent_format(scale = 100)) +
-  labs(x = "Release Year", 
-       y = "Count (Percentage)", 
-       title = "Distribution of Ratings Over Years") +
+  labs(
+    x = "Release Year",
+    y = "Count (Percentage)",
+    title = "Distribution of Ratings Over Years"
+  ) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_fill_manual(values = c("#221f1f", "#5e4d4d","#b20710", "#ec8b90","#ec8b06"))
+  scale_fill_manual(values = c("#221f1f", "#5e4d4d", "#b20710", "#ec8b90", "#ec8b06"))
 
 p3_plotly <- ggplotly(p3)
 p3_plotly
@@ -294,22 +301,31 @@ p3_plotly
 ### The distribution of rating
 
 # bar chart with rotated labels
-p1 <- ggplot(plotdata, 
-       aes(x = reorder(rating, -n), 
-           y = n, 
-           fill = rating)) + 
-  geom_bar(stat="identity") +
-  labs(x = "Rating", 
-       y = "Count", 
-       title  = "The distribution of rating") +
-  theme(axis.text.x = element_text(angle = 45, 
-                                   hjust = 1)) +
-  scale_fill_manual(values = c("#221f1f", "#301D1C","#3E1B1B","#4C1919","#5A1717",
-                               "#681515","#761313","#841111","#921010","#A00E0E",
-                                "#AE0C0C","#BC0A0A","#CA0808","#B20710","#b20710","#ec8b06", "#ec8b90"))
+p1 <- ggplot(
+  plotdata,
+  aes(
+    x = reorder(rating, -n),
+    y = n,
+    fill = rating
+  )
+) +
+  geom_bar(stat = "identity") +
+  labs(
+    x = "Rating",
+    y = "Count",
+    title = "The distribution of rating"
+  ) +
+  theme(axis.text.x = element_text(
+    angle = 45,
+    hjust = 1
+  )) +
+  scale_fill_manual(values = c(
+    "#221f1f", "#301D1C", "#3E1B1B", "#4C1919", "#5A1717",
+    "#681515", "#761313", "#841111", "#921010", "#A00E0E",
+    "#AE0C0C", "#BC0A0A", "#CA0808", "#B20710", "#b20710", "#ec8b06", "#ec8b90"
+  ))
 p1_plotly <- ggplotly(p1)
 p1_plotly
-
 ```
  
 # Country {.storyboard}
