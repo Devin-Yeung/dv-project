@@ -259,8 +259,7 @@ p <- category_type_data %>%
   theme(
     panel.border = element_rect(color = "black", fill = NA, size = 1)
   )
-
-p
+ggplotly(p)
 ```
 
 ### rating catergory over each year
@@ -287,7 +286,7 @@ p3 <- plotdata %>%
     title = "Distribution of Ratings Over Years"
   ) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_fill_manual(values = c("#221f1f", "#5e4d4d", "#b20710", "#ec8b90", "#ec8b06"))
+  scale_fill_manual(values = c("#221f1f", "#5e4d4d", "#b20710", "#ec8b06"))
 
 p3_plotly <- ggplotly(p3)
 p3_plotly
@@ -376,7 +375,7 @@ custom_order <- type_prop %>%
   flatten() %>%
   unique()
 
-ggplot(type_prop, aes(y = factor(country, levels = custom_order), x = prop, fill = type)) +
+p <- ggplot(type_prop, aes(y = factor(country, levels = custom_order), x = prop, fill = type)) +
   geom_bar(stat = "identity") +
   geom_text(
     aes(label = scales::percent(prop / 100)),
@@ -393,6 +392,7 @@ ggplot(type_prop, aes(y = factor(country, levels = custom_order), x = prop, fill
   scale_x_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 100)) +
   scale_fill_manual(values = c("#221f1f", "#b20710")) +
   theme_minimal()
+ggplotly(p)
 ```
 
 ### Distribution of netflix over years
