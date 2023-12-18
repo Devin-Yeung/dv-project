@@ -274,13 +274,15 @@ plotdata <- mydata %>%
   )) %>%
   group_by(category, release_year) %>%
   summarize(n = n()) %>%
+  group_by(release_year) %>%
+  mutate(prop = round((n / sum(n)) * 100, 1))  %>%
   as.data.frame()
 
 p3 <- plotdata %>%
   filter(release_year >= 2000) %>%
-  ggplot(aes(release_year, n, fill = category)) +
+  ggplot(aes(release_year, prop, fill = category)) +
   geom_bar(stat = "identity", position = "fill") +
-  geom_text(aes(label = n),
+  geom_text(aes(label = paste0(prop, "%")),
             position = position_fill(vjust = 0.5), 
             color = "white", 
             size = 3) +  # Add text labels with percentages
