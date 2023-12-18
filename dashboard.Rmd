@@ -8,7 +8,6 @@ output:
     social: ["wechat"]
     theme: united
     source_code: embed
-runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
@@ -22,6 +21,7 @@ library(knitr)
 library(tidyverse)
 library(purrr) # for functional programming
 library(ggwordcloud) # for creating word cloud
+library(crosstalk)
 ```
 
 ```{r}
@@ -402,25 +402,37 @@ ggplotly(p)
 
 ### Distribution of netflix over years
 ```{r}
-sliderInput("year", "Current Year",
-            min = 2008, max = 2020, value = 2000, step = 1
+
+shared_country_accum <- SharedData$new(country_accum, key = ~country)
+
+# Create a filter_slider for the 'year' variable
+filter_slider_year <- filter_select(
+  "year",
+  "Current Year",
+  shared_country_accum,
+  ~year_added,
+  multiple = F
+  # column = ~year_added,
+  # step = 1,
+  # width = "50%",
 )
 
-renderPlotly({
-  country_accum %>%
-    filter(year_added == input$year) %>%
-    plot_ly(
-      type = "choropleth",
-      locations = ~country,
-      locationmode = "country names",
-      z = ~accum,
-      color = ~accum,
-      colors = "OrRd",
-      colorbar = list(title = "Accumlated Sum"),
-      text = ~ paste(country, "<br>Accumlated Sum: ", accum)
-    ) %>%
-    layout(inline = T)
-})
+# Plotly chart with crosstalk filter
+choropleth_chart <- shared_country_accum %>%
+  plot_ly(
+    type = "choropleth",
+    locations = ~country,
+    locationmode = "country names",
+    z = ~accum,
+    color = ~accum,
+    colors = "OrRd",
+    colorbar = list(title = "Accumulated Sum"),
+    text = ~ paste(country, "<br>Accumulated Sum: ", accum)
+  ) %>%
+  layout(inline = TRUE)
+
+filter_slider_year
+choropleth_chart
 ```
 
 # Keywords {.storyboard}
