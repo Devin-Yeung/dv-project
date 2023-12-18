@@ -299,6 +299,9 @@ p3_plotly
 ### The distribution of rating
 ```{r}
 ### The distribution of rating
+plotdata <- mydata %>%
+  group_by(rating) %>%
+  summarize(n = n())
 
 # bar chart with rotated labels
 p1 <- ggplot(
@@ -328,7 +331,65 @@ p1_plotly <- ggplotly(p1)
 p1_plotly
 ```
  
-# Country {.storyboard}
+Country
+=====================================
+## Column {.tabset data-width="650"}
+
+### Country vs Types
+```{r}
+# Pre-process
+df <- read.csv("data/netflix_titles.csv", na.strings = c("", "NA"))
+
+grouped <- df %>%
+  filter(!is.na(country) & country != "") %>% # remove the NA country
+  filter(!is.na(date_added)) %>% # remove the NA date_added
+  mutate(year_added = year(parse_date(date_added, "%B %d, %Y"))) %>% # extract year_added
+  mutate(country = strsplit(as.character(country), ",")) %>%
+  mutate(country = lapply(country, trimws)) %>%
+  unnest(country) %>%
+  group_by(country, year_added, type) %>%
+  summarise(cnt = n()) %>%
+  filter(!is.na(country) & country != "")
+
+by_country_type <- grouped %>%
+  group_by(country, type) %>%
+  summarise(cnt = sum(cnt))
+
+type_prop <- by_country_type %>%
+  group_by(country) %>%
+  mutate(prop = round(cnt / sum(cnt) * 100, 1)) %>%
+  group_by(country) %>%
+  summarise(total = sum(cnt), prop = prop, type = type) %>%
+  as.data.frame() %>%
+  top_n(20, wt = total)
+
+custom_order <- type_prop %>%
+  arrange(desc(ifelse(type == "Movie", prop, -prop))) %>%
+  select(country) %>%
+  array() %>%
+  flatten() %>%
+  unique()
+
+ggplot(type_prop, aes(y = factor(country, levels = custom_order), x = prop, fill = type)) +
+  geom_bar(stat = "identity") +
+  geom_text(
+    aes(label = scales::percent(prop / 100)),
+    position = position_stack(vjust = 0.5),
+    color = "white",
+    size = 3
+  ) +
+  labs(
+    title = "Proportions of Movie and TV Show by Country",
+    y = "Country",
+    x = "Proportion (%)",
+    fill = "Type"
+  ) +
+  scale_x_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 100)) +
+  scale_fill_manual(values = c("#221f1f", "#b20710")) +
+  theme_minimal()
+```
+
+# Keywords {.storyboard}
 
 ```{r}
 library(tidyverse)
