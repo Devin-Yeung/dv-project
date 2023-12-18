@@ -265,11 +265,6 @@ ggplotly(p)
 ### rating catergory over each year
 ```{r}
 plotdata <- mydata %>%
-  group_by(rating, release_year) %>%
-  summarize(n = n())
-
-p3 <- plotdata %>%
-  filter(release_year >= 2000) %>%
   mutate(category = case_when(
     rating %in% c("G", "TV-G", "TV-Y") ~ "Little Kids",
     rating %in% c("PG", "TV-PG", "TV-Y7") ~ "Older Kids",
@@ -277,8 +272,18 @@ p3 <- plotdata %>%
     rating %in% c("NC-17", "NR", "R", "TV-MA", "UR") ~ "Adults",
     TRUE ~ "Other" # Add a default category for any unexpected ratings
   )) %>%
+  group_by(category, release_year) %>%
+  summarize(n = n()) %>%
+  as.data.frame()
+
+p3 <- plotdata %>%
+  filter(release_year >= 2000) %>%
   ggplot(aes(release_year, n, fill = category)) +
   geom_bar(stat = "identity", position = "fill") +
+  geom_text(aes(label = n),
+            position = position_fill(vjust = 0.5), 
+            color = "white", 
+            size = 3) +  # Add text labels with percentages
   scale_y_continuous(labels = scales::percent_format(scale = 100)) +
   labs(
     x = "Release Year",
@@ -291,8 +296,6 @@ p3 <- plotdata %>%
 p3_plotly <- ggplotly(p3)
 p3_plotly
 ```
-
-
 
 ### The distribution of rating
 ```{r}
