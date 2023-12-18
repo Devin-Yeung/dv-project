@@ -8,6 +8,7 @@ output:
     social: ["wechat"]
     theme: united
     source_code: embed
+runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
@@ -351,6 +352,13 @@ grouped <- df %>%
   summarise(cnt = n()) %>%
   filter(!is.na(country) & country != "")
 
+country_accum <- grouped %>%
+  group_by(country, year_added) %>%
+  summarise(cnt = sum(cnt)) %>%
+  group_by(country) %>%
+  arrange(year_added) %>%
+  mutate(accum = cumsum(cnt))
+
 by_country_type <- grouped %>%
   group_by(country, type) %>%
   summarise(cnt = sum(cnt))
@@ -387,6 +395,29 @@ ggplot(type_prop, aes(y = factor(country, levels = custom_order), x = prop, fill
   scale_x_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 100)) +
   scale_fill_manual(values = c("#221f1f", "#b20710")) +
   theme_minimal()
+```
+
+### Distribution of netflix over years
+```{r}
+sliderInput("year", "Current Year",
+            min = 2008, max = 2020, value = 2000, step = 1
+)
+
+renderPlotly({
+  country_accum %>%
+    filter(year_added == input$year) %>%
+    plot_ly(
+      type = "choropleth",
+      locations = ~country,
+      locationmode = "country names",
+      z = ~accum,
+      color = ~accum,
+      colors = "OrRd",
+      colorbar = list(title = "Accumlated Sum"),
+      text = ~ paste(country, "<br>Accumlated Sum: ", accum)
+    ) %>%
+    layout(inline = T)
+})
 ```
 
 # Keywords {.storyboard}
